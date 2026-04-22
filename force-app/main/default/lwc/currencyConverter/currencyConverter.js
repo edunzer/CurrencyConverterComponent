@@ -94,4 +94,8 @@ export default class CurrencyConverter extends LightningElement {
 			.sort((a, b) => a.IsoCode.localeCompare(b.IsoCode))
 			.map(c => ({ label: c.IsoCode, value: c.IsoCode }));
 	}
+
+    get amountOutput() {
+		return this.result ? this.result.to : '';
+	}
 }

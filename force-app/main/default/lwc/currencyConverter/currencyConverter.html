@@ -1,19 +1,11 @@
 <template>
 	<lightning-card title="Currency Converter" icon-name="custom:custom41">
 		<div class="slds-p-around_medium">
-			<lightning-input
-				type="number"
-				label="Enter Amount"
-				value={amount}
-				onchange={handleAmountChange}
-				step="0.01"
-				min="0"
-				required
-			></lightning-input>
 
 			<div class="slds-m-top_medium">
 				<lightning-layout multiple-rows>
-					<lightning-layout-item size="12">
+					<!-- Row 1: From Currency | Amount Input -->
+					<lightning-layout-item size="6" padding="around-small">
 						<lightning-combobox
 							name="fromCurrency"
 							label="From Currency"
@@ -23,6 +15,19 @@
 							onchange={handleFromChange}
 						></lightning-combobox>
 					</lightning-layout-item>
+					<lightning-layout-item size="6" padding="around-small">
+						<lightning-input
+							type="number"
+							label="Enter Amount"
+							value={amount}
+							onchange={handleAmountChange}
+							step="0.01"
+							min="0"
+							required
+						></lightning-input>
+					</lightning-layout-item>
+
+					<!-- Row 2: Swap Button -->
 					<lightning-layout-item size="12" class="slds-align_absolute-center slds-p-vertical_small">
 						<lightning-button-icon
 							icon-name="utility:change_record_type"
@@ -30,10 +35,12 @@
 							title="Swap currencies"
 							onclick={handleSwap}
 							variant="border-filled"
-							size="medium"
+							size="large"
 						></lightning-button-icon>
 					</lightning-layout-item>
-					<lightning-layout-item size="12">
+
+					<!-- Row 3: To Currency | Amount Output (Result) -->
+					<lightning-layout-item size="6" padding="around-small">
 						<lightning-combobox
 							name="toCurrency"
 							label="To Currency"
@@ -42,6 +49,14 @@
 							options={currencyOptions}
 							onchange={handleToChange}
 						></lightning-combobox>
+					</lightning-layout-item>
+					<lightning-layout-item size="6" padding="around-small">
+						<lightning-input
+							type="number"
+							label="Amount Output"
+							value={amountOutput}
+							disabled
+						></lightning-input>
 					</lightning-layout-item>
 				</lightning-layout>
 			</div>
@@ -64,11 +79,6 @@
 				</template>
 			</div>
 
-			<template if:true={result}>
-				<div class="slds-m-top_medium slds-text-heading_small">
-					{result.from} {result.fromIso} = {result.to} {result.toIso}
-				</div>
-			</template>
 			<template if:true={error}>
 				<div class="slds-m-top_medium slds-text-color_error">
 					{error}
