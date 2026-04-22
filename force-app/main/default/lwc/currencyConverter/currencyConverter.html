@@ -51,13 +51,32 @@
 						></lightning-combobox>
 					</lightning-layout-item>
 					<lightning-layout-item size="6" padding="around-small">
-						<lightning-input
-							type="number"
-							label="Converted Amount"
-							value={amountOutput}
-							readonly
-							onclick={handleOutputClick}
-						></lightning-input>
+						<div class="slds-grid slds-grid_vertical-align-center">
+							<div class="slds-col slds-size_10-of-12">
+								<lightning-input
+									type="number"
+									label="Converted Amount"
+									value={amountOutput}
+									disabled
+									class="copy-output-field"
+								></lightning-input>
+							</div>
+							<div class="slds-col slds-size_2-of-12 slds-p-left_small slds-m-top_medium">
+								<lightning-button-icon
+									icon-name="utility:copy"
+									alternative-text="Copy"
+									title="Copy to clipboard"
+									onclick={handleOutputCopy}
+									variant="bare"
+									class="copy-output-btn"
+								></lightning-button-icon>
+							</div>
+						</div>
+						<div class="slds-text-color_weak slds-text-body_small slds-m-top_xx-small">
+							<template if:true={copied}>
+								<span class="slds-text-color_success">Copied!</span>
+							</template>
+						</div>
 					</lightning-layout-item>
 				</lightning-layout>
 			</div>

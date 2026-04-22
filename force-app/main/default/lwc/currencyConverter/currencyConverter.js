@@ -11,6 +11,7 @@ export default class CurrencyConverter extends LightningElement {
 	@track result = null;
 	@track error = '';
 	@track loading = false;
+    @track copied = false;
 
 	// Fetch currencies on load
 	@wire(getActiveCurrencies)
@@ -99,26 +100,21 @@ export default class CurrencyConverter extends LightningElement {
 		return this.result ? this.result.to : '';
 	}
 
-    handleOutputClick(event) {
-		// Copy the value to clipboard
+	handleOutputCopy() {
 		const value = this.amountOutput;
 		if (value !== undefined && value !== null && value !== '') {
-			// Create a temporary input to select and copy
+			// Copy to clipboard
 			const tempInput = document.createElement('input');
 			tempInput.value = value;
 			document.body.appendChild(tempInput);
 			tempInput.select();
 			document.execCommand('copy');
 			document.body.removeChild(tempInput);
-			// Show a toast message
-			this.showToast('Copied!', 'Amount copied to clipboard.', 'success');
+			// Show copied message
+			this.copied = true;
+			setTimeout(() => {
+				this.copied = false;
+			}, 2000);
 		}
-	}
-
-	showToast(title, message, variant) {
-		const evt = new CustomEvent('showtoast', {
-			detail: { title, message, variant }
-		});
-		this.dispatchEvent(evt);
 	}
 }
