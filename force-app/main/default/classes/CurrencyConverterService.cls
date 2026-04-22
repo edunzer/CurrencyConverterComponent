@@ -5,14 +5,10 @@ public with sharing class CurrencyConverterService {
     // DTO for currency info
     public class CurrencyInfo {
         @AuraEnabled public String IsoCode;
-        @AuraEnabled public String Symbol;
-        @AuraEnabled public String Name;
         @AuraEnabled public Decimal ConversionRate;
         @AuraEnabled public Boolean IsActive;
-        public CurrencyInfo(String iso, String symbol, String name, Decimal rate, Boolean active) {
+        public CurrencyInfo(String iso, Decimal rate, Boolean active) {
             this.IsoCode = iso;
-            this.Symbol = symbol;
-            this.Name = name;
             this.ConversionRate = rate;
             this.IsActive = active;
         }
@@ -24,11 +20,9 @@ public with sharing class CurrencyConverterService {
     @AuraEnabled(cacheable=true)
     public static List<CurrencyInfo> getActiveCurrencies() {
         List<CurrencyInfo> result = new List<CurrencyInfo>();
-        for (CurrencyType ct : [SELECT IsoCode, Symbol, ConversionRate, IsActive, DecimalPlaces, CurrencyName FROM CurrencyType WHERE IsActive = true]) {
+        for (CurrencyType ct : [SELECT IsoCode, ConversionRate, IsActive FROM CurrencyType WHERE IsActive = true]) {
             result.add(new CurrencyInfo(
                 ct.IsoCode,
-                ct.Symbol,
-                ct.CurrencyName,
                 ct.ConversionRate,
                 ct.IsActive
             ));
@@ -49,9 +43,10 @@ public with sharing class CurrencyConverterService {
             return amount.setScale(2);
         }
 
-        Map<String, CurrencyType> currencyMap = new Map<String, CurrencyType>([
-            SELECT IsoCode, ConversionRate, IsActive FROM CurrencyType WHERE IsActive = true
-        ]);
+        Map<String, CurrencyType> currencyMap = new Map<String, CurrencyType>();
+        for (CurrencyType ct : [SELECT IsoCode, ConversionRate, IsActive FROM CurrencyType WHERE IsActive = true]) {
+            currencyMap.put(ct.IsoCode, ct);
+        }
 
         if (!currencyMap.containsKey(fromIso) || !currencyMap.containsKey(toIso)) {
             throw new AuraHandledException('Selected currency is not active or does not exist.');
@@ -72,7 +67,7 @@ public with sharing class CurrencyConverterService {
      */
     @AuraEnabled(cacheable=true)
     public static String getOrgDefaultCurrencyIso() {
-        Organization orgInfo = [SELECT DefaultCurrencyIsoCode FROM Organization LIMIT 1];
-        return orgInfo.DefaultCurrencyIsoCode != null ? orgInfo.DefaultCurrencyIsoCode : 'USD';
+        // Fallback to USD, as Organization.DefaultCurrencyIsoCode is not available
+        return 'USD';
     }
 }

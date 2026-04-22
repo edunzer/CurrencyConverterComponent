@@ -22,13 +22,10 @@ export default class CurrencyConverter extends LightningElement {
 				getOrgDefaultCurrencyIso()
 					.then(defaultIso => {
 						this.fromCurrency = defaultIso;
-						// Set toCurrency to first different currency
-						const firstOther = this.currencies.find(c => c.IsoCode !== defaultIso);
-						this.toCurrency = firstOther ? firstOther.IsoCode : defaultIso;
+						// Do not set a default for toCurrency
 					})
 					.catch(() => {
 						this.fromCurrency = 'USD';
-						this.toCurrency = 'EUR';
 					});
 			}
 		} else if (error) {
@@ -92,6 +89,9 @@ export default class CurrencyConverter extends LightningElement {
 	}
 
 	get currencyOptions() {
-		return this.currencies.map(c => ({ label: `${c.IsoCode} - ${c.Name}`, value: c.IsoCode }));
+		return this.currencies
+			.slice()
+			.sort((a, b) => a.IsoCode.localeCompare(b.IsoCode))
+			.map(c => ({ label: c.IsoCode, value: c.IsoCode }));
 	}
 }
