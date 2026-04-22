@@ -53,9 +53,10 @@
 					<lightning-layout-item size="6" padding="around-small">
 						<lightning-input
 							type="number"
-							label="Amount Output"
+							label="Converted Amount"
 							value={amountOutput}
-							disabled
+							readonly
+							onclick={handleOutputClick}
 						></lightning-input>
 					</lightning-layout-item>
 				</lightning-layout>

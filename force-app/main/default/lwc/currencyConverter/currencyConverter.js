@@ -98,4 +98,27 @@ export default class CurrencyConverter extends LightningElement {
     get amountOutput() {
 		return this.result ? this.result.to : '';
 	}
+
+    handleOutputClick(event) {
+		// Copy the value to clipboard
+		const value = this.amountOutput;
+		if (value !== undefined && value !== null && value !== '') {
+			// Create a temporary input to select and copy
+			const tempInput = document.createElement('input');
+			tempInput.value = value;
+			document.body.appendChild(tempInput);
+			tempInput.select();
+			document.execCommand('copy');
+			document.body.removeChild(tempInput);
+			// Show a toast message
+			this.showToast('Copied!', 'Amount copied to clipboard.', 'success');
+		}
+	}
+
+	showToast(title, message, variant) {
+		const evt = new CustomEvent('showtoast', {
+			detail: { title, message, variant }
+		});
+		this.dispatchEvent(evt);
+	}
 }
