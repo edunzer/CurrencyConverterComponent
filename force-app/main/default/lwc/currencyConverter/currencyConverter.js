@@ -2,6 +2,7 @@ import { LightningElement, wire, track } from 'lwc';
 import getActiveCurrencies from '@salesforce/apex/CurrencyConverterService.getActiveCurrencies';
 import convertCurrency from '@salesforce/apex/CurrencyConverterService.convertCurrency';
 import getOrgDefaultCurrencyIso from '@salesforce/apex/CurrencyConverterService.getOrgDefaultCurrencyIso';
+import getUserDefaultCurrencyIso from '@salesforce/apex/CurrencyConverterService.getUserDefaultCurrencyIso';
 
 export default class CurrencyConverter extends LightningElement {
 	@track amount = '';
@@ -20,13 +21,19 @@ export default class CurrencyConverter extends LightningElement {
 			this.currencies = data;
 			// Set defaults after currencies load
 			if (!this.fromCurrency) {
-				getOrgDefaultCurrencyIso()
-					.then(defaultIso => {
-						this.fromCurrency = defaultIso;
-						// Do not set a default for toCurrency
+				getUserDefaultCurrencyIso()
+					.then(userIso => {
+						this.fromCurrency = userIso;
 					})
 					.catch(() => {
-						this.fromCurrency = 'USD';
+						// fallback to org default if user default fails
+						getOrgDefaultCurrencyIso()
+							.then(defaultIso => {
+								this.fromCurrency = defaultIso;
+							})
+							.catch(() => {
+								this.fromCurrency = 'USD';
+							});
 					});
 			}
 		} else if (error) {

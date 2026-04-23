@@ -70,4 +70,22 @@ public with sharing class CurrencyConverterService {
         // Fallback to USD, as Organization.DefaultCurrencyIsoCode is not available
         return 'USD';
     }
+
+    /**
+     * Get the user's default currency ISO code, fallback to org default if not set
+     */
+    @AuraEnabled(cacheable=true)
+    public static String getUserDefaultCurrencyIso() {
+        // Try to get the user's currency (works in multi-currency orgs)
+        String userCurrency = null;
+        try {
+            userCurrency = [SELECT DefaultCurrencyIsoCode FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1].DefaultCurrencyIsoCode;
+        } catch (Exception e) {
+            // Ignore and fallback
+        }
+        if (String.isNotBlank(userCurrency)) {
+            return userCurrency;
+        }
+        return getOrgDefaultCurrencyIso();
+    }
 }
