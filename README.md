@@ -16,7 +16,9 @@ The UI and conversion logic are split across:
 ### Runtime flow
 
 1. On load, the component calls `getActiveCurrencies()` to fetch active currencies.
-2. It then calls `getOrgDefaultCurrencyIso()` to default **From Currency** (this method is currently hardcoded to return `USD`).
+2. It then calls `getUserDefaultCurrencyIso()` to set the initial **From Currency** selection:
+  - If the user has a default currency (`DefaultCurrencyIsoCode`), it is used.
+  - If not, the org's default currency is used (falling back to `USD` if unavailable).
 3. Users enter:
    - source currency (`From Currency`)
    - amount (`Enter Amount`)
