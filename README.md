@@ -57,33 +57,6 @@ Defined in `currencyConverter.js-meta.xml`:
 - `lightning__HomePage`
 - `lightning__UtilityBar`
 
-## Setup and usage
-
-### Prerequisites
-
-- Node.js + npm
-- Salesforce CLI and an authenticated org/scratch org
-
-### Install dependencies
-
-```bash
-npm install
-```
-
-### Deploy to org
-
-Example using Salesforce CLI:
-
-```bash
-sf project deploy start
-```
-
-### Add component in Lightning App Builder
-
-1. Open App Builder for a Home, App, or Record page (or Utility Bar setup).
-2. Drag **currencyConverter** onto the page.
-3. Save and activate.
-
 ## Development and test commands
 
 ```bash
