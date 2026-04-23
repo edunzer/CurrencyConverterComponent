@@ -12,7 +12,7 @@ The UI and conversion logic are split across:
 ### Runtime flow
 
 1. On load, the component calls `getActiveCurrencies()` to fetch active currencies.
-2. It then calls `getOrgDefaultCurrencyIso()` to default **From Currency** (currently returns `USD`).
+2. It then calls `getOrgDefaultCurrencyIso()` to default **From Currency** (this method is currently hardcoded to return `USD`).
 3. Users enter:
    - source currency (`From Currency`)
    - amount (`Enter Amount`)
@@ -26,8 +26,8 @@ The UI and conversion logic are split across:
 Rates are treated as relative to the org base currency:
 
 ```text
-usdAmount = amount / fromRate
-result    = usdAmount * toRate
+baseAmount = amount / fromRate
+result     = baseAmount * toRate
 ```
 
 Returned values are rounded to 2 decimal places.
