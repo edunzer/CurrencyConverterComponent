@@ -2,6 +2,10 @@
 
 Salesforce Lightning Web Component (LWC) for converting amounts between active org currencies using Salesforce `CurrencyType.ConversionRate` values.
 
+## Screenshot
+
+<img>
+
 ## How the component works
 
 The UI and conversion logic are split across:
