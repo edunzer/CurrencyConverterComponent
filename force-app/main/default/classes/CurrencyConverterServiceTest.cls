@@ -37,4 +37,28 @@ public with sharing class CurrencyConverterServiceTest {
         String iso = CurrencyConverterService.getOrgDefaultCurrencyIso();
         System.assertEquals('USD', iso, 'Default currency should be USD');
     }
+
+    @isTest
+    static void testGetUserDefaultCurrencyIso() {
+        // Simulate user with DefaultCurrencyIsoCode set
+        User u = [SELECT Id, DefaultCurrencyIsoCode FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+        String originalIso = u.DefaultCurrencyIsoCode;
+        String testIso = 'EUR';
+        
+        // Only update if not already EUR
+        if (originalIso != testIso) {
+            u.DefaultCurrencyIsoCode = testIso;
+            update u;
+        }
+        Test.startTest();
+        String userIso = CurrencyConverterService.getUserDefaultCurrencyIso();
+        Test.stopTest();
+        System.assertEquals(testIso, userIso, 'Should return user\'s default currency ISO');
+
+        // Restore original value
+        if (originalIso != testIso) {
+            u.DefaultCurrencyIsoCode = originalIso;
+            update u;
+        }
+    }
 }
