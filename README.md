@@ -4,7 +4,7 @@ Salesforce Lightning Web Component (LWC) for converting amounts between active o
 
 ## Screenshot
 
-<img>
+<img src="docs/images/currency-converter-screenshot.svg" alt="Currency Converter component screenshot">
 
 ## How the component works
 
