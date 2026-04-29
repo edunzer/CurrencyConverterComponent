@@ -5,7 +5,7 @@
 			<div>
 				<lightning-layout multiple-rows>
 					<!-- Row 1: From Currency | Amount Input -->
-					<lightning-layout-item size="6" padding="around-small">
+					<lightning-layout-item size="5" padding="around-small">
 						<lightning-combobox
 							name="fromCurrency"
 							label="From Currency"
@@ -16,32 +16,19 @@
                             required
 						></lightning-combobox>
 					</lightning-layout-item>
-					<lightning-layout-item size="6" padding="around-small">
-						<lightning-input
-							type="number"
-							label="Enter Amount"
-							value={amount}
-							onchange={handleAmountChange}
-							step="0.01"
-							min="0"
-							required
-						></lightning-input>
+					<lightning-layout-item size="2" padding="around-small">
+						<div class="slds-grid slds-grid_vertical-align-center slds-grid_align-center" style="height:100%; min-height:3rem;">
+							<lightning-button-icon
+								icon-name="utility:change_record_type"
+								alternative-text="Swap"
+								title="Swap currencies"
+								onclick={handleSwap}
+								variant="border-filled"
+								size="large"
+							></lightning-button-icon>
+						</div>
 					</lightning-layout-item>
-
-					<!-- Row 2: Swap Button -->
-					<lightning-layout-item size="12" class="slds-align_absolute-center slds-p-vertical_small">
-						<lightning-button-icon
-							icon-name="utility:change_record_type"
-							alternative-text="Swap"
-							title="Swap currencies"
-							onclick={handleSwap}
-							variant="border-filled"
-							size="large"
-						></lightning-button-icon>
-					</lightning-layout-item>
-
-					<!-- Row 3: To Currency | Amount Output (Result) -->
-					<lightning-layout-item size="6" padding="around-small">
+					<lightning-layout-item size="5" padding="around-small">
 						<lightning-combobox
 							name="toCurrency"
 							label="To Currency"
@@ -52,7 +39,28 @@
                             required
 						></lightning-combobox>
 					</lightning-layout-item>
-					<lightning-layout-item size="6" padding="around-small">
+
+					<!-- Row 2: To Currency | Amount Output (Result) -->
+					<lightning-layout-item size="5" padding="around-small">
+						<lightning-input
+							type="number"
+							label="Enter Amount"
+							value={amount}
+							onchange={handleAmountChange}
+							step="0.01"
+							min="0"
+							required
+						></lightning-input>
+					</lightning-layout-item>
+					<lightning-layout-item size="2" padding="around-small">
+						<lightning-input
+							type="number"
+							label="Rate"
+							value={exchangeRate}
+							disabled
+						></lightning-input>
+					</lightning-layout-item>
+					<lightning-layout-item size="5" padding="around-small">
 						<lightning-layout vertical-align="center" pull-to-boundary="small">
 							<lightning-layout-item size="10" class="slds-p-right_x-small slds-p-left_small">
 								<lightning-input
