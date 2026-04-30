@@ -148,16 +148,17 @@ export default class CurrencyConverter extends LightningElement {
 		];
 	}
 
-	get currencyTableData() {
-		// Always show USD as the from currency
-		if (!this.currencies || !Array.isArray(this.currencies)) return [];
-		return this.currencies
-			.filter(c => c.IsoCode !== 'USD')
-			.map(c => ({
-				id: c.IsoCode,
-				from: 'USD',
-				rate: c.ConversionRate,
-				to: c.IsoCode
-			}));
-	}
+	   get currencyTableData() {
+		   // Always show USD as the from currency, sorted by 'to' value
+		   if (!this.currencies || !Array.isArray(this.currencies)) return [];
+		   return this.currencies
+			   .filter(c => c.IsoCode !== 'USD')
+			   .map(c => ({
+				   id: c.IsoCode,
+				   from: 'USD',
+				   rate: c.ConversionRate,
+				   to: c.IsoCode
+			   }))
+			   .sort((a, b) => a.to.localeCompare(b.to));
+	   }
 }
