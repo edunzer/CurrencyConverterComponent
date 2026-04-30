@@ -13,6 +13,7 @@ export default class CurrencyConverter extends LightningElement {
 	@track error = '';
 	@track loading = false;
     @track copied = false;
+	@track exchangeRate = '';
 
 	// Fetch currencies on load
 	@wire(getActiveCurrencies)
@@ -45,18 +46,21 @@ export default class CurrencyConverter extends LightningElement {
 		this.amount = event.target.value;
 		this.result = null;
 		this.error = '';
+		this.exchangeRate = '';
 	}
 
 	handleFromChange(event) {
 		this.fromCurrency = event.target.value;
 		this.result = null;
 		this.error = '';
+		this.exchangeRate = '';
 	}
 
 	handleToChange(event) {
 		this.toCurrency = event.target.value;
 		this.result = null;
 		this.error = '';
+		this.exchangeRate = '';
 	}
 
 	handleSwap() {
@@ -65,6 +69,7 @@ export default class CurrencyConverter extends LightningElement {
 		this.toCurrency = temp;
 		this.result = null;
 		this.error = '';
+		this.exchangeRate = '';
 	}
 
 	get isCalculateDisabled() {
@@ -75,6 +80,7 @@ export default class CurrencyConverter extends LightningElement {
 		this.loading = true;
 		this.result = null;
 		this.error = '';
+		this.exchangeRate = '';
 		convertCurrency({
 			amount: Number(this.amount),
 			fromIso: this.fromCurrency,
@@ -87,6 +93,10 @@ export default class CurrencyConverter extends LightningElement {
 					to: res,
 					toIso: this.toCurrency
 				};
+				// Calculate and store the exchange rate
+				if (this.amount && Number(this.amount) > 0) {
+					this.exchangeRate = (Number(res) / Number(this.amount)).toFixed(6);
+				}
 			})
 			.catch(e => {
 				this.error = e && e.body && e.body.message ? e.body.message : 'Conversion failed.';
@@ -124,4 +134,31 @@ export default class CurrencyConverter extends LightningElement {
 			}, 2000);
 		}
 	}
+	
+	get showRate() {
+		return this.fromCurrency && this.toCurrency;
+	}
+
+
+	get currencyTableColumns() {
+		return [
+			{ label: 'From', fieldName: 'from', type: 'text' },
+			{ label: 'Rate', fieldName: 'rate', type: 'number', cellAttributes: { alignment: 'left' } },
+			{ label: 'To', fieldName: 'to', type: 'text' }
+		];
+	}
+
+	   get currencyTableData() {
+		   // Always show USD as the from currency, sorted by 'to' value
+		   if (!this.currencies || !Array.isArray(this.currencies)) return [];
+		   return this.currencies
+			   .filter(c => c.IsoCode !== 'USD')
+			   .map(c => ({
+				   id: c.IsoCode,
+				   from: 'USD',
+				   rate: c.ConversionRate,
+				   to: c.IsoCode
+			   }))
+			   .sort((a, b) => a.to.localeCompare(b.to));
+	   }
 }
