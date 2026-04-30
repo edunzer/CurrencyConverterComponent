@@ -2,124 +2,138 @@
 	<lightning-card title="Currency Converter" icon-name="custom:custom41">
 		<div class="slds-p-around_medium">
 
-			<div>
-				<lightning-layout multiple-rows>
-					<!-- Row 1: From Currency | Amount Input -->
-					<lightning-layout-item size="5" padding="around-small">
-						<lightning-combobox
-							name="fromCurrency"
-							label="From Currency"
-							placeholder="From"
-							value={fromCurrency}
-							options={currencyOptions}
-							onchange={handleFromChange}
-                            required
-						></lightning-combobox>
-					</lightning-layout-item>
-					<lightning-layout-item size="2" padding="around-small">
-						<div class="slds-grid slds-grid_align-center slds-m-top_large">
-							<lightning-button-icon
-								icon-name="utility:change_record_type"
-								alternative-text="Swap"
-								title="Swap currencies"
-								onclick={handleSwap}
-								variant="border-filled"
-								size="large"
-							></lightning-button-icon>
-						</div>
-					</lightning-layout-item>
-					<lightning-layout-item size="5" padding="around-small">
-						<lightning-combobox
-							name="toCurrency"
-							label="To Currency"
-							placeholder="To"
-							value={toCurrency}
-							options={currencyOptions}
-							onchange={handleToChange}
-                            required
-						></lightning-combobox>
-					</lightning-layout-item>
-
-					<!-- Row 2: To Currency | Amount Output (Result) -->
-					<lightning-layout-item size="5" padding="around-small">
-						<lightning-input
-							type="number"
-							label="Enter Amount"
-							value={amount}
-							onchange={handleAmountChange}
-							step="0.01"
-							min="0"
-							required
-						></lightning-input>
-					</lightning-layout-item>
-					<lightning-layout-item size="2" padding="around-small">
-						<lightning-input
-							type="number"
-							label="Rate"
-							value={exchangeRate}
-							disabled
-						></lightning-input>
-					</lightning-layout-item>
-					<lightning-layout-item size="5" padding="around-small">
-						<lightning-layout vertical-align="center" pull-to-boundary="small">
-							<lightning-layout-item size="10" class="slds-p-right_x-small slds-p-left_small">
-								<lightning-input
-									type="number"
-									label="Converted Amount"
-									value={amountOutput}
-									disabled
-									class="copy-output-field"
-								></lightning-input>
-							</lightning-layout-item>
-							<lightning-layout-item size="2" class="slds-m-top_medium">
+			<lightning-tabset>
+				<lightning-tab label="Currency Calculator">
+					<lightning-layout multiple-rows>
+						<!-- Row 1: From Currency | Amount Input -->
+						<lightning-layout-item size="5" padding="around-small">
+							<lightning-combobox
+								name="fromCurrency"
+								label="From Currency"
+								placeholder="From"
+								value={fromCurrency}
+								options={currencyOptions}
+								onchange={handleFromChange}
+								required
+							></lightning-combobox>
+						</lightning-layout-item>
+						<lightning-layout-item size="2" padding="around-small">
+							<div class="slds-grid slds-grid_align-center slds-m-top_large">
 								<lightning-button-icon
-									icon-name="utility:copy"
-									alternative-text="Copy"
-									title="Copy to clipboard"
-									onclick={handleOutputCopy}
-									variant="bare"
-									class="copy-output-btn"
+									icon-name="utility:change_record_type"
+									alternative-text="Swap"
+									title="Swap currencies"
+									onclick={handleSwap}
+									variant="border-filled"
+									size="large"
 								></lightning-button-icon>
+							</div>
+						</lightning-layout-item>
+						<lightning-layout-item size="5" padding="around-small">
+							<lightning-combobox
+								name="toCurrency"
+								label="To Currency"
+								placeholder="To"
+								value={toCurrency}
+								options={currencyOptions}
+								onchange={handleToChange}
+								required
+							></lightning-combobox>
+						</lightning-layout-item>
+
+						<!-- Row 2: To Currency | Amount Output (Result) -->
+						<lightning-layout-item size="5" padding="around-small">
+							<lightning-input
+								type="number"
+								label="Enter Amount"
+								value={amount}
+								onchange={handleAmountChange}
+								step="0.01"
+								min="0"
+								required
+							></lightning-input>
+						</lightning-layout-item>
+						<lightning-layout-item size="2" padding="around-small">
+							<lightning-input
+								type="number"
+								label="Rate"
+								value={exchangeRate}
+								disabled
+							></lightning-input>
+						</lightning-layout-item>
+						<lightning-layout-item size="5" padding="around-small">
+							<lightning-layout vertical-align="center" pull-to-boundary="small">
+								<lightning-layout-item size="10" class="slds-p-right_x-small slds-p-left_small">
+									<lightning-input
+										type="number"
+										label="Converted Amount"
+										value={amountOutput}
+										disabled
+										class="copy-output-field"
+									></lightning-input>
+								</lightning-layout-item>
+								<lightning-layout-item size="2" class="slds-m-top_medium">
+									<lightning-button-icon
+										icon-name="utility:copy"
+										alternative-text="Copy"
+										title="Copy to clipboard"
+										onclick={handleOutputCopy}
+										variant="bare"
+										class="copy-output-btn"
+									></lightning-button-icon>
+								</lightning-layout-item>
+							</lightning-layout>
+							<div class="slds-text-color_weak slds-text-body_small slds-m-top_xx-small">
+								<template if:true={copied}>
+									<span class="slds-text-color_success">Copied!</span>
+								</template>
+							</div>
+						</lightning-layout-item>
+					</lightning-layout>
+
+					<lightning-layout class="slds-m-top_medium" horizontal-align="center">
+						<lightning-layout-item size="auto">
+							<lightning-button
+								label="Calculate"
+								onclick={handleCalculate}
+								disabled={isCalculateDisabled}
+								variant="brand"
+								class="slds-button_stretch slds-size_medium"
+								style="min-width: 200px;"
+							></lightning-button>
+						</lightning-layout-item>
+						<template if:true={loading}>
+							<lightning-layout-item size="auto" class="slds-m-left_small">
+								<lightning-spinner size="small"></lightning-spinner>
 							</lightning-layout-item>
-						</lightning-layout>
-						<div class="slds-text-color_weak slds-text-body_small slds-m-top_xx-small">
-							<template if:true={copied}>
-								<span class="slds-text-color_success">Copied!</span>
-							</template>
+						</template>
+					</lightning-layout>
+
+					<template if:true={error}>
+						<div class="slds-m-top_medium slds-text-color_error">
+							{error}
 						</div>
-					</lightning-layout-item>
-				</lightning-layout>
-			</div>
+					</template>
+					<div style="background:#f8f9fa; border-radius:.5rem; padding:1rem; margin-top:2rem;" class="slds-text-color_weak slds-text-body_small slds-align_absolute-center">
+						<div>
+							Conversion rates are fixed values configured in Salesforce to align with Finance’s reporting practices for consistency, not live market rates.<br/><br/>
+							Active system currencies are available for selection. To request a new currency, please submit a ticket to Salesforce Support.
+						</div>
+					</div>
 
-			<lightning-layout class="slds-m-top_medium" horizontal-align="center">
-				<lightning-layout-item size="auto">
-					<lightning-button
-						label="Calculate"
-						onclick={handleCalculate}
-						disabled={isCalculateDisabled}
-						variant="brand"
-						class="slds-button_stretch slds-size_medium"
-						style="min-width: 200px;"
-					></lightning-button>
-				</lightning-layout-item>
-				<template if:true={loading}>
-					<lightning-layout-item size="auto" class="slds-m-left_small">
-						<lightning-spinner size="small"></lightning-spinner>
-					</lightning-layout-item>
-				</template>
-			</lightning-layout>
+				</lightning-tab>
+				<lightning-tab label="Exchange Rates"> 
+					<div class="slds-m-top_medium">
+						<lightning-datatable
+							key-field="id"
+							data={currencyTableData}
+							columns={currencyTableColumns}
+							hide-checkbox-column
+						></lightning-datatable>
+					</div>
+				</lightning-tab>
+			</lightning-tabset>
 
-			<template if:true={error}>
-				<div class="slds-m-top_medium slds-text-color_error">
-					{error}
-				</div>
-			</template>
-			<div style="background:#f8f9fa; border-radius:.5rem; padding:1rem; margin-top:2rem;" class="slds-text-color_weak slds-text-body_small slds-align_absolute-center">
-				<div>
-					Conversion rates are fixed values configured in Salesforce to align with Finance’s reporting practices for consistency, not live market rates.<br/><br/>
-					Active system currencies are available for selection. To request a new currency, please submit a ticket to Salesforce Support.
-				</div>
-			</div>
 		</div>
 	</lightning-card>
 </template>

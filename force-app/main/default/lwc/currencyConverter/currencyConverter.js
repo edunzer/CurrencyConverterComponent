@@ -3,6 +3,7 @@ import getActiveCurrencies from '@salesforce/apex/CurrencyConverterService.getAc
 import convertCurrency from '@salesforce/apex/CurrencyConverterService.convertCurrency';
 import getOrgDefaultCurrencyIso from '@salesforce/apex/CurrencyConverterService.getOrgDefaultCurrencyIso';
 import getUserDefaultCurrencyIso from '@salesforce/apex/CurrencyConverterService.getUserDefaultCurrencyIso';
+import { loadStyle } from 'lightning/platformResourceLoader';
 
 export default class CurrencyConverter extends LightningElement {
 	@track amount = '';
@@ -14,6 +15,7 @@ export default class CurrencyConverter extends LightningElement {
 	@track loading = false;
     @track copied = false;
 	@track exchangeRate = '';
+	@track activeTab = 'calculator';
 
 	// Fetch currencies on load
 	@wire(getActiveCurrencies)
@@ -137,5 +139,38 @@ export default class CurrencyConverter extends LightningElement {
 	
 	get showRate() {
 		return this.fromCurrency && this.toCurrency;
+	}
+
+	get isCalculatorTab() {
+		return this.activeTab === 'calculator';
+	}
+
+	get isRatesTab() {
+		return this.activeTab === 'rates';
+	}
+
+	handleTabChange(event) {
+		this.activeTab = event.target.value;
+	}
+
+	get currencyTableColumns() {
+		return [
+			{ label: 'From', fieldName: 'from', type: 'text' },
+			{ label: 'Rate', fieldName: 'rate', type: 'number', cellAttributes: { alignment: 'left' } },
+			{ label: 'To', fieldName: 'to', type: 'text' }
+		];
+	}
+
+	get currencyTableData() {
+		// Always show USD as the from currency
+		if (!this.currencies || !Array.isArray(this.currencies)) return [];
+		return this.currencies
+			.filter(c => c.IsoCode !== 'USD')
+			.map(c => ({
+				id: c.IsoCode,
+				from: 'USD',
+				rate: c.ConversionRate,
+				to: c.IsoCode
+			}));
 	}
 }
